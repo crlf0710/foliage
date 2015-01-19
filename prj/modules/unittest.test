@@ -1,0 +1,9 @@
+# -*- mode: makefile-gmake; eval: (when (boundp 'flycheck-mode) (flycheck-mode -1)) -*-
+
+$(eval $(call BEGIN_TEST_EXE_MODULE, unittest))
+
+$(eval $(call ADD_MODULE_TEST_SOURCES, $(wildcard $(TESTPATH)*.cpp)))
+
+$(eval $(call ADD_MODULE_TEST_SOURCES, $(wildcard $(TESTPATH)*.cc)))
+
+$(eval $(call END_TEST_EXE_MODULE))
