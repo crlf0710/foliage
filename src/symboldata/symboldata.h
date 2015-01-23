@@ -7,16 +7,16 @@ namespace foliage {
 namespace symboldata {
 	enum
 	{
-		FOLIAGE_SYMBOLDATA_SECTORSIZE = 1024,
+		symboldata_sectorsize = 1024,
 
 	};
 
 	typedef std::uintptr_t symboldatagroup_t;
-	typedef std::uintptr_t symboldataref_t;
+	typedef std::uintptr_t symboldataref_t, symboldataoffset_t;
 
 	struct symboldatabuffer
 	{
-		symboldatagroup_t buffer[FOLIAGE_SYMBOLDATA_SECTORSIZE];
+		symboldatagroup_t buffer[symboldata_sectorsize];
 	};
 	typedef symboldatabuffer symboldatabuffer_t;
 	
@@ -25,29 +25,38 @@ namespace symboldata {
 	class symboldatachain
 	{
 	public:
+		typedef std::deque < std::unique_ptr<symboldatabuffer_t> > _chaintype;
+
+		class group_iterator;
+	public:
 		symboldatachain()
-			: cursor(FOLIAGE_SYMBOLDATA_SECTORSIZE)
+			: cursor(symboldata_sectorsize)
 		{
 
 		}
 
+		size_t get_capacity();
+
 		symboldataref_t intern(const std::string& prefix, symboldataref_t suffix = symboldataref_invalid)
 		{
-			symboldataref_t ref = query(prefix, suffix);
-			if (ref == symboldataref_invalid) ref = createref(prefix, suffix);
+			symboldataref_t _ref = query(prefix, suffix);
+			if (_ref == symboldataref_invalid) _ref = createref(prefix, suffix);
 
-			return ref;
+			return _ref;
 		}
 
 	protected:
 		void _addnodeifneeded();
 		void _appendbuffer(const void* buffer, size_t groupcount);
 
+		bool _verify(const std::string& prefix, symboldataref_t suffix, const group_iterator& iter);
+		bool _verify_shallow(const std::string& prefix, symboldataref_t suffix, const group_iterator& iter);
+
 		symboldataref_t query(const std::string& prefix, symboldataref_t suffix = symboldataref_invalid);
 		symboldataref_t createref(const std::string& prefix, symboldataref_t suffix = symboldataref_invalid);
 
-		std::deque < std::unique_ptr<symboldatabuffer_t> > nodes;
-		std::uintptr_t cursor;
+		_chaintype			nodes;
+		symboldataoffset_t	cursor;
 	};
 
 	typedef symboldatachain symboldatachain_t;
