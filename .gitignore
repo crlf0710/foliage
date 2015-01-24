@@ -29,3 +29,9 @@
 
 # Intermediate files
 *.deps
+
+# MS VS database files
+*.suo
+*.sdf
+*.opensdf
+*.log

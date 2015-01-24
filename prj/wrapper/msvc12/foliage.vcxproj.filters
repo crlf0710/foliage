@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Resources Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\symboldata">
+      <UniqueIdentifier>{ff2f0b2d-b3c4-42ef-8749-7cc84d99c214}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\utils">
+      <UniqueIdentifier>{8a9d8506-d63d-4a6e-b0e3-7ea0cf10ac1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UnitTest Files">
+      <UniqueIdentifier>{2f34ab56-765e-47c2-aea6-b84ecd4cc933}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UnitTest Files\GoogleTest">
+      <UniqueIdentifier>{ac4d31f1-c2f6-4347-ab24-51d29895b5db}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\symboldata\symboldata.cpp">
+      <Filter>Source Files\symboldata</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\test\main.cpp">
+      <Filter>UnitTest Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\test\gmock-gtest-all.cc">
+      <Filter>UnitTest Files\GoogleTest</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\symboldata\symboldata.h">
+      <Filter>Source Files\symboldata</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\utils\mathutils.h">
+      <Filter>Source Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\utils\varsizeint.h">
+      <Filter>Source Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\test\gtest\gtest.h">
+      <Filter>UnitTest Files\GoogleTest</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\test\gmock\gmock.h">
+      <Filter>UnitTest Files\GoogleTest</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

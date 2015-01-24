@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="foliage|Win32">
+      <Configuration>foliage</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\symboldata\symboldata.cpp" />
+    <ClCompile Include="..\..\..\test\gmock-gtest-all.cc" />
+    <ClCompile Include="..\..\..\test\main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\symboldata\symboldata.h" />
+    <ClInclude Include="..\..\..\src\utils\mathutils.h" />
+    <ClInclude Include="..\..\..\src\utils\varsizeint.h" />
+    <ClInclude Include="..\..\..\test\gmock\gmock.h" />
+    <ClInclude Include="..\..\..\test\gtest\gtest.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{8EB9E61C-05E3-4BBA-94CD-338EA447ED87}</ProjectGuid>
+    <Keyword>MakeFileProj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='foliage|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='foliage|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='foliage|Win32'">
+    <NMakePreprocessorDefinitions>$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <OutDir>$(ProjectDir)../../../lib/</OutDir>
+    <IntDir>$(ProjectDir)../../../obj/</IntDir>
+    <NMakeBuildCommandLine>make -j4 -C $(ProjectDir)../../../prj/native/gcc TEST=1</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>$(NMakeBuildCommandLine) CLEAN=1</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>$(NMakeBuildCommandLine) CLEAN=1 BUILD=0</NMakeCleanCommandLine>
+    <NMakeOutput>$(ProjectDir)../../../bin/unittest.exe</NMakeOutput>
+    <NMakeIncludeSearchPath>$(ProjectDir)../../../include;$(ProjectDir)../../../src;$(ProjectDir)../../../test</NMakeIncludeSearchPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <NMakeBuildCommandLine>make -C $(ProjectDir)../../prj/native/gcc -j4</NMakeBuildCommandLine>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='foliage|Win32'">
+    <BuildLog>
+      <Path>$(ProjectDir)$(MSBuildProjectName).log</Path>
+    </BuildLog>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
