@@ -9,7 +9,8 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\src\symboldata\symboldata.cpp" />
     <ClCompile Include="..\..\..\test\gmock-gtest-all.cc" />
-    <ClCompile Include="..\..\..\test\main.cpp" />
+    <ClCompile Include="..\..\..\test\unittest.cpp" />
+    <ClCompile Include="..\..\..\test\ut_symboldata.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\symboldata\symboldata.h" />
@@ -17,6 +18,20 @@
     <ClInclude Include="..\..\..\src\utils\varsizeint.h" />
     <ClInclude Include="..\..\..\test\gmock\gmock.h" />
     <ClInclude Include="..\..\..\test\gtest\gtest.h" />
+    <ClInclude Include="..\..\..\test\unittest.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\modules\symboldata.module" />
+    <None Include="..\..\modules\unittest.test" />
+    <None Include="..\..\shared\build.cfg" />
+    <None Include="..\..\shared\flags.cfg" />
+    <None Include="..\..\shared\Makefile" />
+    <None Include="..\..\shared\modules.cfg" />
+    <None Include="..\..\shared\paths.cfg" />
+    <None Include="..\..\shared\preamble.cfg" />
+    <None Include="..\..\shared\rules.cfg" />
+    <None Include="..\..\shared\system.cfg" />
+    <None Include="..\..\shared\toolchain.cfg" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{8EB9E61C-05E3-4BBA-94CD-338EA447ED87}</ProjectGuid>
@@ -39,11 +54,14 @@
     <NMakePreprocessorDefinitions>$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
     <OutDir>$(ProjectDir)../../../lib/</OutDir>
     <IntDir>$(ProjectDir)../../../obj/</IntDir>
-    <NMakeBuildCommandLine>make -j4 -C $(ProjectDir)../../../prj/native/gcc TEST=1</NMakeBuildCommandLine>
+    <NMakeBuildCommandLine>make -j4 -C $(ProjectDir)../../../prj/native/gcc DEBUG=1 TEST=1</NMakeBuildCommandLine>
     <NMakeReBuildCommandLine>$(NMakeBuildCommandLine) CLEAN=1</NMakeReBuildCommandLine>
     <NMakeCleanCommandLine>$(NMakeBuildCommandLine) CLEAN=1 BUILD=0</NMakeCleanCommandLine>
     <NMakeOutput>$(ProjectDir)../../../bin/unittest.exe</NMakeOutput>
     <NMakeIncludeSearchPath>$(ProjectDir)../../../include;$(ProjectDir)../../../src;$(ProjectDir)../../../test</NMakeIncludeSearchPath>
+    <AdditionalOptions>
+    </AdditionalOptions>
+    <NMakeForcedIncludes>fcntl.h;windows.h</NMakeForcedIncludes>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <NMakeBuildCommandLine>make -C $(ProjectDir)../../prj/native/gcc -j4</NMakeBuildCommandLine>

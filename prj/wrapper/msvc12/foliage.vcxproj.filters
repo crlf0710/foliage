@@ -25,16 +25,28 @@
     <Filter Include="UnitTest Files\GoogleTest">
       <UniqueIdentifier>{ac4d31f1-c2f6-4347-ab24-51d29895b5db}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Project Files">
+      <UniqueIdentifier>{76a23f0d-773f-40da-b927-0f25bb02193a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Project Files\shared">
+      <UniqueIdentifier>{a1a0e733-f503-401f-946b-8b5ba7ca4362}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Project Files\modules">
+      <UniqueIdentifier>{127bec73-8e9d-497e-8e33-70e8917bc904}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\symboldata\symboldata.cpp">
       <Filter>Source Files\symboldata</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\test\main.cpp">
-      <Filter>UnitTest Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\test\gmock-gtest-all.cc">
       <Filter>UnitTest Files\GoogleTest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\test\unittest.cpp">
+      <Filter>UnitTest Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\test\ut_symboldata.cpp">
+      <Filter>UnitTest Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -53,5 +65,43 @@
     <ClInclude Include="..\..\..\test\gmock\gmock.h">
       <Filter>UnitTest Files\GoogleTest</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\test\unittest.h">
+      <Filter>UnitTest Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\shared\build.cfg">
+      <Filter>Project Files\shared</Filter>
+    </None>
+    <None Include="..\..\shared\flags.cfg">
+      <Filter>Project Files\shared</Filter>
+    </None>
+    <None Include="..\..\shared\Makefile">
+      <Filter>Project Files\shared</Filter>
+    </None>
+    <None Include="..\..\shared\modules.cfg">
+      <Filter>Project Files\shared</Filter>
+    </None>
+    <None Include="..\..\shared\paths.cfg">
+      <Filter>Project Files\shared</Filter>
+    </None>
+    <None Include="..\..\shared\preamble.cfg">
+      <Filter>Project Files\shared</Filter>
+    </None>
+    <None Include="..\..\shared\rules.cfg">
+      <Filter>Project Files\shared</Filter>
+    </None>
+    <None Include="..\..\shared\system.cfg">
+      <Filter>Project Files\shared</Filter>
+    </None>
+    <None Include="..\..\shared\toolchain.cfg">
+      <Filter>Project Files\shared</Filter>
+    </None>
+    <None Include="..\..\modules\symboldata.module">
+      <Filter>Project Files\modules</Filter>
+    </None>
+    <None Include="..\..\modules\unittest.test">
+      <Filter>Project Files\modules</Filter>
+    </None>
   </ItemGroup>
 </Project>

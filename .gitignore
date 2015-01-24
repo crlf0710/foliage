@@ -35,3 +35,8 @@
 *.sdf
 *.opensdf
 *.log
+
+# Production directories
+bin
+obj
+lib
