@@ -1,7 +1,3 @@
-#include <string>
-#include <memory>
-#include <cassert>
-#include <cstring>
 #include "symboldata.h"
 #include "../utils/mathutils.h"
 
@@ -31,7 +27,7 @@ namespace symboldata {
 			_set(_ref);
 		}
 
-		auto& operator=(symboldataref_t _ref)
+		group_iterator& operator=(symboldataref_t _ref)
 		{
 			_set(_ref);
 			return *this;
@@ -77,7 +73,7 @@ namespace symboldata {
 			return _get();
 		}
 
-		auto& operator++()
+		group_iterator& operator++()
 		{
 			if (is_invalid())
 			{
@@ -104,7 +100,7 @@ namespace symboldata {
 			return *this;
 		}
 
-		auto& operator--()
+		group_iterator& operator--()
 		{
 			// actual decrement takes place here
 			if (is_invalid())
@@ -133,8 +129,8 @@ namespace symboldata {
 			return *this;
 		}
 
-		auto operator++(int) { auto tmp(*this); operator++(); return tmp; }
-		auto operator--(int) { auto tmp(*this); operator--(); return tmp; }
+		group_iterator operator++(int) { auto tmp(*this); operator++(); return tmp; }
+		group_iterator operator--(int) { auto tmp(*this); operator--(); return tmp; }
 	};
 
 	size_t symboldatachain::get_capacity()
@@ -202,6 +198,7 @@ namespace symboldata {
 		assert(cursor + groupcount <= symboldata_sectorsize);
 		copy_n(reinterpret_cast<const symboldatagroup_t*>(buffer),
 			groupcount, (reinterpret_cast<symboldatagroup_t*>((**nodes.rbegin()).buffer) + cursor));
+		cursor += groupcount;
 	}
 
 	symboldataref_t symboldatachain::createref(const string& prefix, symboldataref_t suffix /* = symboldataref_invalid */)
@@ -228,7 +225,7 @@ namespace symboldata {
 		_addnodeifneeded();
 		_appendbuffer(&restgroupdata, 1);
 
-		if (suffix)
+		if (suffix != symboldataref_invalid)
 		{
 			static_assert(sizeof(suffix) == groupsize, "symboldatagroup_t should be the same size with symboldataref_t.");
 			_addnodeifneeded();

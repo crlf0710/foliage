@@ -1,3 +1,7 @@
+#include <string>
+#include <memory>
+#include <cassert>
+#include <cstring>
 #include <climits>
 #include <deque>
 #include <algorithm>
