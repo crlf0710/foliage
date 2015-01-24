@@ -1,4 +1,6 @@
 #include "symboldata.h"
+#include "symboldata_groupiterator.h"
+#include "symboldata_tokenizer.h"
 #include "../utils/mathutils.h"
 
 namespace foliage {
@@ -12,130 +14,26 @@ namespace symboldata {
 	using std::strncmp;
 	using foliage::utils::last_byte_of;
 
-	class symboldatachain::group_iterator
-	{
-	public:
-		symboldatachain*		chain;
-		_chaintype::iterator	iter;
-		symboldataoffset_t		offset;
-
-	public:
-		group_iterator(symboldatachain* _chain, symboldataref_t _ref)
-			: chain(_chain), iter(_chain->nodes.begin()), offset(symboldataref_invalid)
-		{
-			assert(_chain != nullptr);
-			_set(_ref);
-		}
-
-		group_iterator& operator=(symboldataref_t _ref)
-		{
-			_set(_ref);
-			return *this;
-		}
-
-		void _set(symboldataref_t _ref)
-		{
-			if (_ref != symboldataref_invalid && _ref < chain->get_capacity())
-			{
-				iter += _ref / symboldata_sectorsize;
-				offset = _ref % symboldata_sectorsize;
-			}
-			else
-			{
-				offset = symboldataref_invalid;
-			}
-		}
-
-		symboldataref_t _get()
-		{
-			return offset == symboldataref_invalid
-				? symboldataref_invalid
-				: (iter - chain->nodes.begin()) * symboldata_sectorsize + offset;
-		}
-
-		bool is_invalid() const
-		{
-			return offset == symboldataref_invalid;
-		}
-
-		bool is_valid() const
-		{
-			return !is_invalid();
-		}
-
-		operator symboldatagroup_t* () const
-		{
-			return is_invalid() ? nullptr : (*iter)->buffer + offset;
-		}
-
-		symboldataref_t get_ref()
-		{
-			return _get();
-		}
-
-		group_iterator& operator++()
-		{
-			if (is_invalid())
-			{
-				if (chain->get_capacity())
-					_set(0);
-			}
-			else
-			{
-				bool last_node = iter + 1 == chain->nodes.end();
-				if (offset < (last_node ? chain->cursor : symboldata_sectorsize))
-				{
-					offset++;
-				}
-				else if (!last_node)
-				{
-					iter++;
-					offset = 0;
-				}
-				else
-				{
-					_set(symboldataref_invalid);
-				}
-			}
-			return *this;
-		}
-
-		group_iterator& operator--()
-		{
-			// actual decrement takes place here
-			if (is_invalid())
-			{
-				size_t capacity = chain->get_capacity();
-				if (capacity) 
-					_set(capacity - 1);
-			}
-			else
-			{
-				bool first_node = iter == chain->nodes.begin();
-				if (offset > 0)
-				{
-					offset--;
-				}
-				else if (!first_node)
-				{
-					iter--;
-					offset = symboldata_sectorsize - 1;
-				}
-				else
-				{
-					_set(symboldataref_invalid);
-				}
-			}
-			return *this;
-		}
-
-		group_iterator operator++(int) { auto tmp(*this); operator++(); return tmp; }
-		group_iterator operator--(int) { auto tmp(*this); operator--(); return tmp; }
-	};
-
 	size_t symboldatachain::get_capacity()
 	{
 		return (nodes.size() * symboldata_sectorsize) - (symboldata_sectorsize - cursor); 
+	}
+
+	symboldataref_t symboldatachain::intern(const std::string& prefix, symboldataref_t suffix /* = symboldataref_invalid */)
+	{
+		symboldata_reverse_tokenizer tokenizer(prefix);
+		symboldataref_t _ref = suffix;
+
+		for (const auto& token : tokenizer)
+		{
+			auto newref = query(token, _ref);
+			if (newref == symboldataref_invalid)
+				newref = createref(token, _ref);
+			_ref = newref;
+		}
+		
+		return _ref;
+
 	}
 
 	bool symboldatachain::_verify_shallow(const string& prefix, symboldataref_t suffix, const group_iterator& iter)
@@ -176,7 +74,7 @@ namespace symboldata {
 
 	symboldataref_t symboldatachain::query(const string& prefix, symboldataref_t suffix /* = symboldataref_invalid */)
 	{
-		for (group_iterator it(this, 0); it.is_valid(); it++)
+		for (group_iterator it(this, suffix == symboldataref_invalid ? 0 : suffix); it.is_valid(); it++)
 		{
 			if (_verify_shallow(prefix, suffix, it))
 				return it.get_ref();
@@ -221,7 +119,7 @@ namespace symboldata {
 
 		symboldatagroup_t restgroupdata = 0;
 		copy_n(prefix.c_str() + wholegrouplen, prefixlen - wholegrouplen, reinterpret_cast<uint8_t*>(&restgroupdata));
-		last_byte_of(restgroupdata) = suffix != 0 ? 0xFF : 0;
+		last_byte_of(restgroupdata) = suffix != symboldataref_invalid ? 0xFF : 0;
 		_addnodeifneeded();
 		_appendbuffer(&restgroupdata, 1);
 

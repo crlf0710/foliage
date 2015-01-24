@@ -1,3 +1,5 @@
+#pragma once 
+
 #include <string>
 #include <memory>
 #include <cassert>
@@ -15,8 +17,7 @@ namespace symboldata {
 
 	};
 
-	typedef std::uintptr_t symboldatagroup_t;
-	typedef std::uintptr_t symboldataref_t, symboldataoffset_t;
+	typedef std::uint32_t symboldatagroup_t, symboldataref_t, symboldataoffset_t;
 
 	struct symboldatabuffer
 	{
@@ -41,13 +42,7 @@ namespace symboldata {
 
 		size_t get_capacity();
 
-		symboldataref_t intern(const std::string& prefix, symboldataref_t suffix = symboldataref_invalid)
-		{
-			symboldataref_t _ref = query(prefix, suffix);
-			if (_ref == symboldataref_invalid) _ref = createref(prefix, suffix);
-
-			return _ref;
-		}
+		symboldataref_t intern(const std::string& prefix, symboldataref_t suffix = symboldataref_invalid);
 
 	protected:
 		void _addnodeifneeded();
