@@ -6,7 +6,7 @@ $(eval $(call ADD_MODULE_TEST_SOURCES, $(wildcard $(TESTPATH)*.cpp)))
 
 $(eval $(call ADD_MODULE_TEST_SOURCES, $(wildcard $(TESTPATH)*.cc)))
 
-$(eval $(call ADD_MODULE_LIB_PRE, symboldata));
+$(eval $(call ADD_MODULE_LIB_PRE, foliage));
 
 $(OBJPATH)test/gmock-gtest-all.o : $(TESTPATH)gmock-gtest-all.cc $(SRC-TARGETS)
 	$(call INVOKE-CXX-NOSTD, $(TEST_CPPFLAGS) $(TEST_CXXFLAGS))

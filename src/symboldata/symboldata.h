@@ -8,6 +8,8 @@
 #include <deque>
 #include <algorithm>
 #include "../utils/varsizeint.h"
+#include "../utils/sysutils.h"
+
 
 namespace foliage {
 namespace symboldata {
@@ -26,7 +28,7 @@ namespace symboldata {
 	typedef symboldatabuffer symboldatabuffer_t;
 	
 	
-	const symboldataref_t symboldataref_invalid = UINTPTR_MAX;
+	const symboldataref_t symboldataref_invalid = std::numeric_limits<symboldataref_t>::max();
 	class symboldatachain
 	{
 	public:

@@ -1,0 +1,9 @@
+# -*- mode: makefile-gmake; eval: (when (boundp 'flycheck-mode) (flycheck-mode -1)) -*-
+
+$(eval $(call BEGIN_SRC_LIB_MODULE, foliage))
+
+$(eval $(call ADD_MODULE_SRC_SOURCES, $(wildcard $(SRCPATH)symboldata/*.cpp)))
+
+$(eval $(call ADD_MODULE_SRC_SOURCES, $(wildcard $(SRCPATH)runtime/*.cpp)))
+
+$(eval $(call END_SRC_LIB_MODULE))

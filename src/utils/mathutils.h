@@ -1,3 +1,5 @@
+#pragma once
+
 #include <type_traits>
 #include <cstdint>
 #include <cstdlib>
@@ -12,10 +14,10 @@ namespace utils {
 	}
 
 	template <class _type>
-	inline typename std::enable_if<std::is_integral<_type>::value, std::uint8_t>::type&
+	inline typename std::enable_if<std::is_integral<_type>::value, byte_t>::type&
 		last_byte_of(_type& _buf)
 	{
-		return *(reinterpret_cast<std::uint8_t*>(&_buf) + (sizeof(_type) - 1));
+		return *(reinterpret_cast<byte_t*>(&_buf) + (sizeof(_type) - 1));
 	}
 }
 }

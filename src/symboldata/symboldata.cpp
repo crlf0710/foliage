@@ -2,17 +2,18 @@
 #include "symboldata_groupiterator.h"
 #include "symboldata_tokenizer.h"
 #include "../utils/mathutils.h"
+#include "../utils/sysutils.h"
 
 namespace foliage {
 namespace symboldata {
 	using std::size_t;
-	using std::uint8_t;
 	using std::string;
 	using std::copy_n;
 	using std::make_unique;
 	using std::min;
 	using std::strncmp;
 	using foliage::utils::last_byte_of;
+	using foliage::utils::byte_t;
 
 	size_t symboldatachain::get_capacity()
 	{
@@ -112,13 +113,13 @@ namespace symboldata {
 		while (groupoffset < wholegroupcount)
 		{
 			_addnodeifneeded();
-			size_t blksize = min(symboldata_sectorsize - cursor, wholegroupcount - groupoffset);
+			size_t blksize = min((size_t)(symboldata_sectorsize - cursor), wholegroupcount - groupoffset);
 			_appendbuffer(prefix.c_str() + groupoffset * groupsize, blksize);
 			groupoffset += blksize;
 		}
 
 		symboldatagroup_t restgroupdata = 0;
-		copy_n(prefix.c_str() + wholegrouplen, prefixlen - wholegrouplen, reinterpret_cast<uint8_t*>(&restgroupdata));
+		copy_n(prefix.c_str() + wholegrouplen, prefixlen - wholegrouplen, reinterpret_cast<byte_t*>(&restgroupdata));
 		last_byte_of(restgroupdata) = suffix != symboldataref_invalid ? 0xFF : 0;
 		_addnodeifneeded();
 		_appendbuffer(&restgroupdata, 1);
