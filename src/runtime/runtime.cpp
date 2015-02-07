@@ -1,31 +1,46 @@
 #define FOLIAGE_RUNTIME_IMPL
 #include "runtime.h"
 #include "memmgr.h"
+#include "../symboldata/symboldata.h"
 
 namespace foliage {
 namespace runtime {
-	using foliage::utils::byte_t;
+	typedef std::unique_ptr<runtime> runtime_ptr;
+	typedef std::unique_ptr<runtime, foliage::utils::placement_delete<runtime> > embedded_runtime_ptr;
+	typedef memory_mgr_impl<memory_mgr_stategy_system> system_memory_mgr;
+	typedef memory_mgr_impl<memory_mgr_stategy_embedded> embedded_memory_mgr;
+
+	template class memory_mgr_impl<memory_mgr_stategy_system>;
 
 	/* static */
-	std::unique_ptr<runtime, foliage::utils::placement_delete<runtime> >
-		runtime::create(std::unique_ptr<foliage::utils::byte_t[]> memory_block, std::size_t memory_block_size)
+	runtime_ptr runtime::create()
 	{
-		std::unique_ptr<runtime, foliage::utils::placement_delete<runtime> > rt(new (memory_block.get())runtime);
-		rt->slotvalue<runtime::slot_memorymgr>() = 
-			(std::uintptr_t)new (memory_block.get() + sizeof(runtime)) memory_mgr<memory_mgr_stategy_embedded>();
-		//runtime::slotvalue()
-		
-		// this memory will leak for now. it will be managed and released by memory mgr when it is ready.
-		auto ptr = memory_block.release();
+		runtime_ptr rt(new runtime);
+		auto const _memory_mgr = (new system_memory_mgr())->handle();
+		rt->slotvalue<runtime::slot_memorymgr>() = cast_slot_value(_memory_mgr);
+
+		auto* const symboldatachain = new(_memory_mgr)runtime::symbol_data_chain_type(_memory_mgr);
+		rt->slotvalue<runtime::slot_symboldatachain>() = cast_slot_value(symboldatachain);
 		return std::move(rt);
 	}
 
 	/* static */
-	std::unique_ptr<runtime> runtime::create()
+	embedded_runtime_ptr runtime::create(std::unique_ptr<foliage::utils::byte_t[]> memory_block, std::size_t memory_block_size)
 	{
-		std::unique_ptr<runtime> rt(new runtime);
+		foliage::utils::byte_t* const memory_startpos = memory_block.release();
+		foliage::utils::byte_t* const runtime_startpos = memory_startpos;
+		embedded_runtime_ptr rt(new (runtime_startpos)runtime);
+		foliage::utils::byte_t* const memory_mgr_startpos = runtime_startpos + sizeof(runtime);
+		auto const _memory_mgr = (new (memory_mgr_startpos)embedded_memory_mgr(memory_startpos, memory_block_size))->handle();
+		rt->slotvalue<runtime::slot_memorymgr>() = cast_slot_value(_memory_mgr);
+
+		typedef memory_allocator<void> alloc_type;
+		auto* const symboldatachain = new(_memory_mgr)runtime::symbol_data_chain_type(_memory_mgr);
+		rt->slotvalue<runtime::slot_symboldatachain>() = cast_slot_value(symboldatachain);
+
 		return std::move(rt);
 	}
+
 
 	runtime::~runtime()
 	{

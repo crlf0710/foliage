@@ -24,6 +24,7 @@ namespace foliage_testing
 int main(int argc, char* argv[])
 {
     std::setlocale(LC_ALL, "");
+	::testing::FLAGS_gtest_catch_exceptions = false;
     ::testing::InitGoogleTest(&argc, argv);
 	foliage_testing::process_params(&argc, argv);
     return RUN_ALL_TESTS();
