@@ -60,10 +60,24 @@ namespace runtime {
 		}
 
 		template <size_t _n>
+		static inline std::uintptr_t slotvalue(const object* object)
+		{
+			assert(object);
+			return object->slots[_n];
+		}
+
+		template <size_t _n>
 		inline std::uintptr_t& slotvalue()
 		{
 			return slotvalue<_n>(this);
 		}
+		
+		template <size_t _n>
+		inline std::uintptr_t slotvalue() const
+		{
+			return slotvalue<_n>(this);
+		}
+
 
 		typedef std::uintptr_t& (&fnptr_slotref)(object*);
 
@@ -75,19 +89,7 @@ namespace runtime {
 				reinterpret_cast<foliage::utils::byte_t*>(slotptr)-offsetof(object, slots[_n])) :
 				nullptr;
 		}
-
-		//template <size_t _n>
-		//inline std::uintptr_t& object_accessor(object* object)
-		//{
-		//	return object->slots[_n];
-		//}
-
-		//inline std::uintptr_t& object_accessor(size_t _n, object* object)
-		//{
-		//	return object->slots[_n];
-		//}
 	};
-
 
 	// object_n
 	
@@ -105,6 +107,19 @@ namespace runtime {
 	};
 	template <> class object_n<1> : public object{};
 
+	template <class T>
+	std::enable_if_t<std::is_integral<T>::value, std::uintptr_t>
+		inline cast_slot_value(T _value)
+	{
+		return static_cast<std::uintptr_t>(_value);
+	}
+	
+	template <class T>
+	std::enable_if_t<std::is_pointer<T>::value, std::uintptr_t>
+		inline cast_slot_value(T _value)
+	{
+		return reinterpret_cast<std::uintptr_t>(_value);
+	}
 
 	class type_info : public object_n<2>
 	{

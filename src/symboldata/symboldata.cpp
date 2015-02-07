@@ -15,12 +15,14 @@ namespace symboldata {
 	using foliage::utils::last_byte_of;
 	using foliage::utils::byte_t;
 
-	size_t symboldatachain::get_capacity()
+	template <class _alloc>
+	size_t symboldatachain<_alloc>::get_capacity()
 	{
 		return (nodes.size() * symboldata_sectorsize) - (symboldata_sectorsize - cursor); 
 	}
 
-	symboldataref_t symboldatachain::intern(const std::string& prefix, symboldataref_t suffix /* = symboldataref_invalid */)
+	template <class _alloc>
+	symboldataref_t symboldatachain<_alloc>::intern(const std::string& prefix, symboldataref_t suffix /* = symboldataref_invalid */)
 	{
 		symboldata_reverse_tokenizer tokenizer(prefix);
 		symboldataref_t _ref = suffix;
@@ -34,10 +36,10 @@ namespace symboldata {
 		}
 		
 		return _ref;
-
 	}
 
-	bool symboldatachain::_verify_shallow(const string& prefix, symboldataref_t suffix, const group_iterator& iter)
+	template <class _alloc>
+	bool symboldatachain<_alloc>::_verify_shallow(const string& prefix, symboldataref_t suffix, const group_iterator& iter)
 	{
 		group_iterator viter = iter;
 		size_t len = prefix.length();
@@ -73,7 +75,8 @@ namespace symboldata {
 		return false;
 	}
 
-	symboldataref_t symboldatachain::query(const string& prefix, symboldataref_t suffix /* = symboldataref_invalid */)
+	template <class _alloc>
+	symboldataref_t symboldatachain<_alloc>::query(const string& prefix, symboldataref_t suffix /* = symboldataref_invalid */)
 	{
 		for (group_iterator it(this, suffix == symboldataref_invalid ? 0 : suffix); it.is_valid(); it++)
 		{
@@ -83,16 +86,24 @@ namespace symboldata {
 		return symboldataref_invalid;
 	}
 
-	void symboldatachain::_addnodeifneeded()
+	template <class _alloc>
+	void symboldatachain<_alloc>::_addnodeifneeded()
 	{
 		if (cursor == symboldata_sectorsize)
 		{
-			nodes.push_back(make_unique<symboldatabuffer_t>());
+			typedef typename std::allocator_traits<_alloc>::template rebind_alloc<symboldatabuffer_t> _suballoc;
+			typedef std::allocator_traits<_suballoc> _subtrait;
+			_suballoc suballocator = allocator;
+			auto newblock = _subtrait::allocate(suballocator, 1);
+			_subtrait::construct(suballocator, newblock);
+			_chainnodetype newblockptr(newblock);
+			nodes.push_back(std::move(newblockptr));
 			cursor = 0;
 		}
 	}
 	
-	void symboldatachain::_appendbuffer(const void* buffer, size_t groupcount)
+	template <class _alloc>
+	void symboldatachain<_alloc>::_appendbuffer(const void* buffer, size_t groupcount)
 	{
 		assert(cursor + groupcount <= symboldata_sectorsize);
 		copy_n(reinterpret_cast<const symboldatagroup_t*>(buffer),
@@ -100,7 +111,8 @@ namespace symboldata {
 		cursor += groupcount;
 	}
 
-	symboldataref_t symboldatachain::createref(const string& prefix, symboldataref_t suffix /* = symboldataref_invalid */)
+	template <class _alloc>
+	symboldataref_t symboldatachain<_alloc>::createref(const string& prefix, symboldataref_t suffix /* = symboldataref_invalid */)
 	{
 		const size_t groupsize = sizeof(symboldatagroup_t);
 		size_t prefixlen = prefix.length();
@@ -133,5 +145,8 @@ namespace symboldata {
 
 		return retvalue;
 	}
+
+
+	template class symboldatachain<>; //request full instantiation.
 }
 }

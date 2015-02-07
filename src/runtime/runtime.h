@@ -20,8 +20,10 @@ namespace runtime {
 		};
 	protected:
 		void* operator new(std::size_t _size){ return ::operator new(_size); }
-		void* operator new(std::size_t _size, void* _place) { return ::operator new(_size, _place); }
-
+		void* operator new(std::size_t _size, void* _place){ return ::operator new(_size, _place); }
+	public:
+		void operator delete(void* _ptr) { return ::operator delete(_ptr); }
+		void operator delete(void* _ptr, void* _place) { return ::operator delete(_ptr, _place); }
 	public:
 		~runtime();
 	public:

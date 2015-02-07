@@ -5,12 +5,13 @@
 namespace foliage {
 namespace symboldata {
 
-	class symboldatachain::group_iterator
+	template<class _alloc>
+	class symboldatachain<_alloc>::group_iterator
 	{
 	public:
-		symboldatachain*		chain;
-		_chaintype::iterator	iter;
-		symboldataoffset_t		offset;
+		symboldatachain*				chain;
+		typename _chaintype::iterator	iter;
+		symboldataoffset_t				offset;
 
 	public:
 		group_iterator(symboldatachain* _chain, symboldataref_t _ref)
